@@ -1,11 +1,10 @@
 import java.util.Random;
-import java.util.Arrays;
 import java.util.ArrayList;
 
 
 class RandomRamsey {
-    final int VERTICES = 17;
-    final int CLIQUE_VERTICES = 5;
+    final int VERTICES = 18;
+    final int CLIQUE_VERTICES = 4;
     final int EDGES = (VERTICES * (VERTICES-1)) / 2;
     final int colors = 2;
     
@@ -14,6 +13,8 @@ class RandomRamsey {
     Random rand = new Random();
     int[][] graph = new int[VERTICES][VERTICES];
    
+    // Creates an nxn edge matrix of a complete graph where vertices
+    // are randomly colored red or blue (1 or 2). 
     public void GraphSim() {
         for (int vertex = 0; vertex < VERTICES; ++vertex) {
             for (int edge = 0; edge < VERTICES; ++edge) {
@@ -26,14 +27,62 @@ class RandomRamsey {
             }
         }
     }
-    
-    // Function to check if the given set of vertices
+
+    // Loops through all possibilities of cliques in the edge matrix
+    // checking if all the edges are the same color
+    public int findMonoTriangle() {
+        int mono = 0;
+        
+        for (int i = 0; i < VERTICES; ++i) {
+            for (int j = i + 1; j < VERTICES; ++j) {
+                for (int k = j + 1; k < VERTICES; ++k) {
+                    for (int l = k + 1; l < VERTICES; ++l) {
+                        if (graph[i][j] == graph[j][k] && graph[j][k] == graph[k][l] && graph[k][l] == graph[i][l]) {
+                            mono++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return mono;
+    }
+        
+    public static void main(String[] args) {
+        ArrayList<Integer> data = new ArrayList<Integer>();
+        
+        
+        RandomRamsey test = new RandomRamsey();
+        int prob = 0;
+        
+        for (int i = 0; i < 10000; ++i) {
+            test.GraphSim();
+            int numCliques = test.findMonoTriangle();
+
+            data.add(numCliques);
+
+            if (numCliques > 0) {
+                prob++;
+            }
+        }
+        
+        
+        for (int i = 0; i < data.size(); ++i) {
+            System.out.print(data.get(i) + ", ");
+        }
+        
+        System.out.println();
+        System.out.println("Probability: " + prob);
+        
+    }
+
+// Function to check if the given set of vertices
     // in store array is a clique or not
     public boolean is_clique(int b) {
         // Run a loop for all the set of edges
         // for the select vertex
         
-        for (int color = 1; color < colors; ++color) {
+        for (int color = 1; color < colors;) {
             for (int i = 1; i < b; i++) 
             {
                 for (int j = i + 1; j < b; j++)
@@ -81,46 +130,4 @@ class RandomRamsey {
         }
     }
     
-    public int findMonoTriangle() {
-        int mono = 0;
-        
-        for (int i = 0; i < VERTICES; ++i) {
-            for (int j = i + 1; j < VERTICES; ++j) {
-                for (int k = j + 1; k < VERTICES; ++k) {
-                    for (int l = k + 1; l < VERTICES; ++l) {
-                        for (int m = l + 1; m < VERTICES; ++m) {
-                            if (graph[i][j] == graph[j][k] && graph[j][k] == graph[k][l] && graph[k][l] == graph[l][m] && graph[l][m] == graph[i][m]) {
-                                mono++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return mono;
-    }
-    
-    
-    
-    public static void main(String[] args) {
-        ArrayList<Integer> data = new ArrayList<Integer>();
-        
-        
-        
-        RandomRamsey test = new RandomRamsey();
-        
-        for (int i = 0; i < 10000; ++i) {
-            test.GraphSim();
-            data.add(test.findMonoTriangle());
-        }
-        
-        
-        for (int i = 0; i < data.size(); ++i) {
-            System.out.print(data.get(i) + ", ");
-        }
-        
-        
-        
-    }
 }
